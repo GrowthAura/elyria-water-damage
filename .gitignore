@@ -1,7 +1,0 @@
-node_modules/
-.next/
-out/
-qa/
-tmp-orig/
-qa-images-manifest.json
-.DS_Store
