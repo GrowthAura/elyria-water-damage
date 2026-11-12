@@ -1,14 +1,15 @@
 import { notFound } from "next/navigation";
-import { ROOT_PAGES, SITE_URL } from "../../lib/data";
+import { SITE_URL } from "../../lib/data";
+import { FULL_ROOT_PAGES, FULL_PAGE_BY_SLUG } from "../../lib/pages-full";
 import LinkedPage from "../../components/LinkedPage";
 
 export function generateStaticParams() {
-  return ROOT_PAGES.map((p) => ({ slug: p.slug }));
+  return FULL_ROOT_PAGES.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const page = ROOT_PAGES.find((p) => p.slug === slug);
+  const page = FULL_PAGE_BY_SLUG[slug];
   if (!page) return {};
   return {
     title: page.metaTitle,
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }) {
 
 export default async function RootPage({ params }) {
   const { slug } = await params;
-  const page = ROOT_PAGES.find((p) => p.slug === slug);
+  const page = FULL_PAGE_BY_SLUG[slug];
   if (!page) notFound();
   return <LinkedPage page={page} urlPath={"/" + slug} />;
 }

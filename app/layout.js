@@ -2,7 +2,7 @@ import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import Header from "../components/Header";
 import StickyCall from "../components/StickyCall";
-import { PHONE, PHONE_TEL, SITE_URL, META, NAV_SERVICES } from "../lib/data";
+import { PHONE, PHONE_TEL, SITE_URL, META, FOOTER_SERVICES } from "../lib/data";
 
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-head", display: "swap" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
@@ -82,12 +82,16 @@ export default function RootLayout({ children }) {
                   <a className="footer-phone" href={PHONE_TEL}>{PHONE}</a>
                   <br />
                   24/7 live dispatch, Elyria, OH 44035, Lorain County
+                  <br />
+                  <a href="/about">About</a>
+                  {" · "}
+                  <a href="/contact">Contact</a>
                 </p>
               </div>
               <div>
                 <h3>Services</h3>
                 <ul>
-                  {NAV_SERVICES.map((s) => (
+                  {FOOTER_SERVICES.map((s) => (
                     <li key={s.href}>
                       <a href={s.href}>{s.label}</a>
                     </li>

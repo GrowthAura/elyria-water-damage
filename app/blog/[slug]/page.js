@@ -1,14 +1,15 @@
 import { notFound } from "next/navigation";
-import { BLOG_PAGES, SITE_URL } from "../../../lib/data";
+import { SITE_URL } from "../../../lib/data";
+import { FULL_BLOG_PAGES, FULL_PAGE_BY_SLUG } from "../../../lib/pages-full";
 import LinkedPage from "../../../components/LinkedPage";
 
 export function generateStaticParams() {
-  return BLOG_PAGES.map((p) => ({ slug: p.slug }));
+  return FULL_BLOG_PAGES.map((p) => ({ slug: p.slug.replace(/^blog\//, "") }));
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const page = BLOG_PAGES.find((p) => p.slug === slug);
+  const page = FULL_PAGE_BY_SLUG["blog/" + slug];
   if (!page) return {};
   return {
     title: page.metaTitle,
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }) {
 
 export default async function BlogPage({ params }) {
   const { slug } = await params;
-  const page = BLOG_PAGES.find((p) => p.slug === slug);
+  const page = FULL_PAGE_BY_SLUG["blog/" + slug];
   if (!page) notFound();
   return <LinkedPage page={page} urlPath={"/blog/" + slug} />;
 }

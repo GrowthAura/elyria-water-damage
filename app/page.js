@@ -230,7 +230,7 @@ export default function HomePage() {
               <article className="step" key={st.n}>
                 <div className="step-num" aria-hidden="true">{st.n}</div>
                 <p className="step-title">
-                  Step {st.n}. {st.title}
+                  Step {st.n}. {st.title}.
                 </p>
                 <p>{st.text}</p>
               </article>

@@ -2,7 +2,7 @@ import { ALL_ROUTES, SITE_URL } from "../lib/data";
 
 export const dynamic = "force-static";
 
-const LASTMOD = "2026-11-11"; // date-only, YYYY-MM-DD
+const LASTMOD = "2026-11-12"; // date-only, YYYY-MM-DD
 
 export default function sitemap() {
   return ALL_ROUTES.map((route) => ({
