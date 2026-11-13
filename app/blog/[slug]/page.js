@@ -11,15 +11,25 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const page = FULL_PAGE_BY_SLUG["blog/" + slug];
   if (!page) return {};
+  const hero = page.heroImage || "/images/hero-home.webp";
+  const heroAlt = page.heroAlt || "Water damage restoration in Elyria, Ohio";
   return {
     title: page.metaTitle,
     description: page.metaDescription,
+    robots: { index: true, follow: true },
     alternates: { canonical: SITE_URL + "/blog/" + slug },
     openGraph: {
       title: page.metaTitle,
       description: page.metaDescription,
       url: SITE_URL + "/blog/" + slug,
       type: "article",
+      images: [{ url: SITE_URL + hero, alt: heroAlt }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: page.metaTitle,
+      description: page.metaDescription,
+      images: [SITE_URL + hero],
     },
   };
 }

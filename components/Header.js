@@ -44,6 +44,13 @@ export default function Header() {
           <a href="/burst-pipe-water-damage" onClick={() => setOpen(false)}>Burst Pipe</a>
           <a href="/sewage-backup-cleanup" onClick={() => setOpen(false)}>Sewage Backup</a>
           <a href="/mold-remediation" onClick={() => setOpen(false)}>Mold Remediation</a>
+          {/* FIX 4000 A-7 (2026-11-13): header had only 5 service links; About,
+              Contact and Blog now link from the header (desktop + mobile menu).
+              No blog hub route exists, so Blog points at the first blog post
+              (tab 29); a hub would be a new route, out of scope. */}
+          <a href="/about" onClick={() => setOpen(false)}>About</a>
+          <a href="/contact" onClick={() => setOpen(false)}>Contact</a>
+          <a href="/blog/water-damage-restoration-cost-elyria" onClick={() => setOpen(false)}>Blog</a>
         </nav>
         <button
           className="nav-toggle"

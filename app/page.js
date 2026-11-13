@@ -20,16 +20,33 @@ import {
   FINAL_CTA,
 } from "../lib/data";
 import Segments from "../components/Segments";
+import SiteSchema from "../components/SiteSchema";
+import { srcsetFor, HERO_SIZES } from "../lib/imageVariants";
 
 export const metadata = {
   title: META.title,
   description: META.description,
+  robots: { index: true, follow: true },
   alternates: { canonical: SITE_URL + "/" },
   openGraph: {
     title: META.title,
     description: META.description,
     url: SITE_URL + "/",
     type: "website",
+    images: [
+      {
+        url: SITE_URL + "/images/hero-home.webp",
+        width: 1400,
+        height: 932,
+        alt: "Aerial view of a flooded farm with grain silos and standing water",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: META.title,
+    description: META.description,
+    images: [SITE_URL + "/images/hero-home.webp"],
   },
 };
 
@@ -48,7 +65,7 @@ const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "@id": SITE_URL + "/#breadcrumb",
-  itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: SITE_URL + "/" }],
+  itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: SITE_URL }],
 };
 
 // HowTo for the visible 8-step process (doc copy only — step titles + text verbatim
@@ -67,21 +84,28 @@ const howToSchema = {
   })),
 };
 
-// WebPage links the graph together and marks the speakable content
-// (hero intro + FAQ) for voice assistants.
+// WebPage links the graph together.
 const webPageSchema = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "@id": SITE_URL + "/",
-  url: SITE_URL + "/",
+  "@id": SITE_URL,
+  url: SITE_URL,
   name: META.title,
+  // OPT-C2 SCHEMA-2 (2026-11-13): primaryImageOfPage = the homepage's own
+  // hero URL (honest, already on-page as og:image) — nothing invented.
+  primaryImageOfPage: SITE_URL + "/images/hero-home.webp",
   isPartOf: { "@id": SITE_URL + "/#website" },
   about: { "@id": SITE_URL + "/#localbusiness" },
   breadcrumb: { "@id": SITE_URL + "/#breadcrumb" },
-  speakable: {
-    "@type": "SpeakableSpecification",
-    cssSelector: [".hero-intro", "#faq"],
-  },
+};
+
+// Short builder-added card-link labels (3–5 words) for the three cards whose
+// H3s would otherwise make "View {H3} →" 7–8 words. All other cards keep
+// "View {H3} →" (their H3s are already short).
+const CARD_LINK_LABELS = {
+  "burst-pipe-water-damage": "View burst pipe cleanup →",
+  "mold-remediation": "View mold remediation →",
+  "flood-damage-restoration": "View flood damage restoration →",
 };
 
 function joinLinks(links) {
@@ -97,6 +121,7 @@ function joinLinks(links) {
 export default function HomePage() {
   return (
     <>
+      <SiteSchema />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
@@ -119,10 +144,12 @@ export default function HomePage() {
         <div className="hero-media">
           <img
             src="/images/hero-home.webp"
-            alt="Aerial view of a flooded neighbourhood with palm trees"
+            alt="Aerial view of a flooded farm with grain silos and standing water"
             width="1600"
             height="900"
             fetchPriority="high"
+            srcSet={srcsetFor("/images/hero-home.webp")}
+            sizes={HERO_SIZES}
           />
         </div>
         <div className="hero-inner">
@@ -177,7 +204,7 @@ export default function HomePage() {
             {SERVICES.map((s) => (
               <article className="card" key={s.h3}>
                 <div className="card-media">
-                  <img src={s.cardImage} alt={s.cardAlt} width="1200" height="675" loading="lazy" />
+                  <img src={s.cardImage} alt={s.cardAlt} width="800" height="450" loading="lazy" />
                 </div>
                 <div className="card-body">
                   <h3>
@@ -186,10 +213,13 @@ export default function HomePage() {
                   <p>
                     <Segments parts={s.body} />
                   </p>
+                  {/* FIX 4000 C P2-1 (2026-11-13): one link per target per page —
+                      the card title above keeps the link; this "View X →" label
+                      is plain text now (was a 2nd link to the same target). */}
                   {s.slug ? (
-                    <a className="card-link" href={"/" + s.slug}>
-                      View {s.h3} →
-                    </a>
+                    <span className="card-link">
+                      {CARD_LINK_LABELS[s.slug] || `View ${s.h3} →`}
+                    </span>
                   ) : null}
                 </div>
               </article>
@@ -255,8 +285,9 @@ export default function HomePage() {
             <Segments
               parts={[
                 CATEGORIES_SECTION.closingPrefix,
-                { link: CATEGORIES_SECTION.closingLink.text, href: CATEGORIES_SECTION.closingLink.href },
-                ".",
+                "Read more in our guide to ",
+                { link: "Category 1, 2 and 3", href: CATEGORIES_SECTION.closingLink.href },
+                " water.",
               ]}
             />
           </p>
@@ -282,8 +313,9 @@ export default function HomePage() {
             <Segments
               parts={[
                 COST_SECTION.closingPrefix,
-                { link: COST_SECTION.closingLink.text, href: COST_SECTION.closingLink.href },
-                ".",
+                "See the full ",
+                { link: "water damage restoration cost", href: COST_SECTION.closingLink.href },
+                " guide.",
               ]}
             />
           </p>
@@ -296,7 +328,7 @@ export default function HomePage() {
           <h2>{INSURANCE_SECTION.h2}</h2>
           <p>{INSURANCE_SECTION.paragraph}</p>
           <p>
-            <a href={INSURANCE_SECTION.linkHref}>{INSURANCE_SECTION.linkText}</a>.
+            Learn more about <a href={INSURANCE_SECTION.linkHref}>water damage insurance claim help</a>.
           </p>
         </div>
       </section>
@@ -387,7 +419,7 @@ export default function HomePage() {
           </div>
           <div className="faq-list">
             {FAQ_SECTION.faqs.map((f) => (
-              <details className="faq-item" key={f.q}>
+              <details className="faq-item" key={f.q} open>
                 <summary>
                   <h3>{f.q}</h3>
                 </summary>

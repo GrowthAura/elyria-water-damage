@@ -1,8 +1,29 @@
-import { ALL_ROUTES, SITE_URL } from "../lib/data";
+import { ALL_ROUTES, SITE_URL, SERVICES } from "../lib/data";
+import { FULL_PAGE_BY_SLUG } from "../lib/pages-full";
 
 export const dynamic = "force-static";
 
 const LASTMOD = "2026-11-12"; // date-only, YYYY-MM-DD
+
+// Images per route (absolute URLs) for the image sitemap: the page's hero
+// plus its body images; the homepage also lists its 9 service-card images.
+function imagesFor(route) {
+  if (route === "/") {
+    const imgs = ["/images/hero-home.webp"];
+    for (const s of SERVICES) {
+      if (s.cardImage) imgs.push(s.cardImage);
+    }
+    return imgs;
+  }
+  const page = FULL_PAGE_BY_SLUG[route.slice(1)];
+  if (!page) return [];
+  const imgs = [];
+  if (page.heroImage) imgs.push(page.heroImage);
+  for (const im of page.bodyImages || []) {
+    if (im.src) imgs.push(im.src);
+  }
+  return imgs;
+}
 
 export default function sitemap() {
   return ALL_ROUTES.map((route) => ({
@@ -12,5 +33,6 @@ export default function sitemap() {
     lastModified: LASTMOD,
     changeFrequency: route === "/" ? "weekly" : "monthly",
     priority: route === "/" ? 1.0 : 0.8,
+    images: imagesFor(route).map((src) => SITE_URL + src),
   }));
 }

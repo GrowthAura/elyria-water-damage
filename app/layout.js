@@ -11,58 +11,11 @@ export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: META.title,
   description: META.description,
-  robots: { index: true, follow: true },
-};
-
-const localBusinessSchema = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": SITE_URL + "/#localbusiness",
-  name: "Water Damage Restoration Elyria",
-  description: META.description,
-  telephone: PHONE,
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Elyria",
-    addressRegion: "OH",
-    postalCode: "44035",
-    addressCountry: "US",
-  },
-  areaServed: [
-    { "@type": "City", name: "Elyria" },
-    { "@type": "AdministrativeArea", name: "Lorain County" },
-  ],
-  url: SITE_URL,
-  priceRange: "$$",
-  openingHoursSpecification: {
-    "@type": "OpeningHoursSpecification",
-    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    opens: "00:00",
-    closes: "23:59",
-  },
-};
-
-const webSiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": SITE_URL + "/#website",
-  name: "Water Damage Restoration Elyria, OH",
-  url: SITE_URL,
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }}
-        />
-      </head>
       <body className={`${fraunces.variable} ${inter.variable}`}>
         <Header />
 

@@ -13,7 +13,7 @@ export async function GET() {
     ``,
     `## Pages`,
     ``,
-    ...ALL_ROUTES.map((r) => `- ${r === "/" ? SITE_URL + "/" : SITE_URL + r}`),
+    ...ALL_ROUTES.map((r) => `- ${r === "/" ? SITE_URL : SITE_URL + r}`),
     ``,
   ];
   return new Response(lines.join("\n"), {

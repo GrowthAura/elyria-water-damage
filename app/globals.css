@@ -1,21 +1,27 @@
-/* Elyria OH Water Damage — fresh CSS. Theme v2 design language only.
-   Deep navy + warm paper + sky accent + amber CTA. 18px body sitewide. */
+/* Elyria OH Water Damage — fresh CSS. Design round 2026-11-13.
+   Deep lake-teal palette + warm paper + coral CTA. 19px body sitewide.
+   Contrast verified by qa/contrast-design.py — every text pair AA >= 4.5:1,
+   body text >= 7:1. Gold #B97F0A is decorative only, never as text.
+   Layout: wide left-aligned editorial lines (prose 104ch), no centered
+   text blocks. */
 :root {
-  --navy: #0b2540;
-  --navy-2: #10365c;
-  --navy-3: #0a1d31;
-  --ink: #16283a;
-  --paper: #fbf8f2;
+  --deep: #0b3b3a;
+  --deep-2: #0e4a46;
+  --deep-3: #082e2d;
+  --ink: #1c2b29;
+  --paper: #faf7f0;
   --paper-2: #ffffff;
-  --sky: #0b7ab5;
-  --sky-dark: #08648f;
-  --amber: #e8590c;
-  --amber-dark: #c94808;
-  --line: #dfe5ea;
-  --muted: #4d5f70;
-  --gold: #f2b705;
+  --teal: #0e7a6d;
+  --teal-dark: #0b5e55;
+  --teal-link: #0a6b60;
+  --coral: #c2401f;
+  --coral-dark: #a93418;
+  --line: #d8e0dc;
+  --muted: #4a5a57;
+  --gold: #b97f0a;
+  --gold-light: #f2c14e;
   --radius: 14px;
-  --shadow: 0 10px 30px rgba(11, 37, 64, 0.12);
+  --shadow: 0 10px 30px rgba(11, 59, 58, 0.12);
   --font-head: "Fraunces", Georgia, "Times New Roman", serif;
   --font-body: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
@@ -24,41 +30,57 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 18px;
+  font-size: 19px;
   line-height: 1.8;
   color: var(--ink);
   background: var(--paper);
   -webkit-font-smoothing: antialiased;
 }
 img { max-width: 100%; height: auto; display: block; }
-a { color: var(--sky-dark); }
-a:hover { color: var(--amber-dark); }
+a { color: var(--teal-link); }
+a:hover { color: var(--teal-dark); }
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-head);
-  color: var(--navy);
+  color: var(--deep);
   line-height: 1.2;
   margin: 0 0 16px;
   font-weight: 650;
 }
 h1 { font-size: 52px; letter-spacing: -0.5px; }
-h2 { font-size: 36px; letter-spacing: -0.3px; }
+h2 { font-size: 36px; letter-spacing: -0.3px; margin-bottom: 20px; }
 h3 { font-size: 26px; }
 p { margin: 0 0 18px; }
 ul, ol { margin: 0 0 18px; padding-left: 24px; }
 li { margin-bottom: 10px; }
-li::marker { color: var(--sky); }
+li::marker { color: var(--teal); }
 .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
-.prose { max-width: 88ch; }
+.prose { max-width: 104ch; }
+/* FIX 4000 A-4 (2026-11-13, re-cap Fix Round 2): body paragraphs rendered
+   97–109 chars/line @1280 (independent re-verification). Root cause: the
+   72ch cap computes to 864px in Inter at 19px (1ch ≈ 12px) while body
+   characters average ~8.4px, so a full line holds ~103 chars. The first
+   fix's "max 77" came from a faulty width estimator (~11.1px/char).
+   Re-capped to 50ch (≈600px): the first 56ch attempt measured worst 86
+   chars/line (probe-fix2-after) — 56ch computes to exactly 672px but the
+   densest lines hold 86 chars there (≈7.8px/char, not the verifier's
+   ~8.4px average; the canvas average also under-reads at 80–81 vs the
+   exact 84–86 range walk). 600px scales the worst line to ≈77 chars,
+   inside the ≤80 bar with margin. Same scope — paragraphs and lists only. */
+.prose > p, .media-text > p, .section-head > p, .faq-answer > p, p.prose { max-width: 50ch; }
+.prose > ul, .media-text > ul { max-width: 50ch; }
 .eyebrow {
   font-size: 15px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--sky); margin-bottom: 14px;
+  text-transform: uppercase; color: var(--teal); margin-bottom: 14px;
 }
 .lede { font-size: 19px; line-height: 1.75; }
 
 /* ---------- header ---------- */
+/* FIX 4000 Round 2 (2026-11-13): header background is fully opaque solid
+   #0b3b3a (was rgba(11,59,58,0.97)) — mid-scroll, page text showed faintly
+   through the sticky header. No transparency anywhere on the header. */
 .site-header {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(11, 37, 64, 0.97);
+  background: #0b3b3a;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 .header-inner {
@@ -68,24 +90,28 @@ li::marker { color: var(--sky); }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
 .brand-mark {
   width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
-  background: var(--sky); color: #fff;
+  background: var(--teal); color: #fff;
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-head); font-size: 26px; font-weight: 700;
 }
 .brand-name { color: #fff; font-family: var(--font-head); font-size: 22px; font-weight: 700; line-height: 1.1; }
-.brand-sub { color: #b9d4e6; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; }
+/* Tight strut on the two-line brand text: without this the inherited 19px /
+   1.8 body line-height makes each brand line 34.2px and forces the header
+   to 66px at 320px (measured), defeating the ≤380px header compaction. */
+.brand > span:last-child { line-height: 1.15; }
+.brand-sub { color: #a8c6be; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; }
 .main-nav { display: flex; gap: 2px; margin-left: auto; flex-wrap: nowrap; }
 .main-nav a {
-  color: #dbe9f3; text-decoration: none; font-size: 16px; font-weight: 500;
+  color: #dce9e5; text-decoration: none; font-size: 16px; font-weight: 500;
   padding: 8px 8px; border-radius: 8px; white-space: nowrap;
 }
 .main-nav a:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
 .header-phone {
-  background: var(--amber-dark); color: #fff !important; text-decoration: none;
-  font-weight: 700; font-size: 18px; padding: 10px 18px; border-radius: 10px;
+  background: var(--coral); color: #fff !important; text-decoration: none;
+  font-weight: 700; font-size: 19px; padding: 10px 18px; border-radius: 10px;
   white-space: nowrap; flex-shrink: 0;
 }
-.header-phone:hover { background: var(--amber-dark); }
+.header-phone:hover { background: var(--coral-dark); }
 .nav-toggle {
   display: none; margin-left: auto; background: none; border: 1px solid rgba(255,255,255,.4);
   color: #fff; font-size: 18px; padding: 8px 12px; border-radius: 8px; cursor: pointer;
@@ -93,33 +119,39 @@ li::marker { color: var(--sky); }
 }
 
 /* ---------- hero ---------- */
-.hero { position: relative; background: var(--navy-3); color: #fff; overflow: hidden; }
+.hero { position: relative; background: var(--deep-3); color: #fff; overflow: hidden; }
 .hero-media { position: absolute; inset: 0; }
 .hero-media img { width: 100%; height: 100%; object-fit: cover; }
 .hero-media::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(90deg, rgba(10, 29, 49, 0.93) 0%, rgba(10, 29, 49, 0.78) 55%, rgba(10, 29, 49, 0.45) 100%);
+  background: linear-gradient(90deg, rgba(8, 46, 45, 0.93) 0%, rgba(8, 46, 45, 0.78) 55%, rgba(8, 46, 45, 0.45) 100%);
 }
 .hero-inner { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; padding: 84px 24px 88px; }
-.hero-inner .eyebrow { color: var(--gold); }
+.hero-inner .eyebrow { color: var(--gold-light); }
 .hero h1 { color: #fff; max-width: 24ch; margin-bottom: 20px; }
-.hero p.hero-intro { color: #e6eef5; max-width: 72ch; font-size: 19px; line-height: 1.75; margin-bottom: 30px; }
-.hero-cta { display: flex; gap: 16px; flex-wrap: wrap; align-items: stretch; }
-/* Both hero buttons exactly equal width on desktop (was 193px vs 239px). */
-.hero-cta .btn { min-width: min(240px, 100%); }
+/* FIX 4000 A-4 Round 3 (2026-11-13): hero intro was the uncapped worst
+   paragraph on 31/40 pages — 72ch = 864px measured 92–104 chars/line
+   (VERIFY2 range-walk). Capped to 50ch like all other body copy. */
+.hero p.hero-intro { color: #e3efea; max-width: 50ch; font-size: 19px; line-height: 1.75; margin-bottom: 30px; }
+/* Equal-share hero buttons (design round): both buttons flex:1 inside a
+   640px container, so Button 1 and Button 2 are always the same width on
+   desktop whatever their label length (longest label 27 chars fits one line
+   at 312px). Single-button bands keep a capped button (see .final-cta). */
+.hero-cta { display: flex; gap: 16px; flex-wrap: wrap; align-items: stretch; max-width: 640px; }
+.hero-cta .btn { flex: 1 1 0; min-width: 0; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 56px; padding: 14px 26px; border-radius: 12px;
-  font-size: 18px; font-weight: 700; text-decoration: none; line-height: 1.3;
+  font-size: 19px; font-weight: 700; text-decoration: none; line-height: 1.3;
   border: 2px solid transparent; cursor: pointer; text-align: center;
 }
-.btn-call { background: var(--amber-dark); color: #fff; }
-/* amber-dark (#c94808) not amber (#e8590c): white-on-amber was 3.58:1, below
-   WCAG AA 4.5:1 for the 18px button text; amber-dark is 4.76:1. */
-.btn-call:hover { background: var(--amber-dark); color: #fff; }
+.btn-call { background: var(--coral); color: #fff; }
+/* coral (#c2401f) not a brighter orange: white-on-coral is 5.19:1, above
+   WCAG AA 4.5:1 for the 19px button text; coral-dark is 6.58:1. */
+.btn-call:hover { background: var(--coral-dark); color: #fff; }
 .btn-help { background: transparent; color: #fff; border-color: #fff; }
 .btn-help:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
-.hero-note { margin-top: 18px; color: #c8d9e8; font-size: 18px; }
+.hero-note { margin-top: 20px; color: #c9dcd6; font-size: 19px; }
 .hero-note strong { color: #fff; }
 
 /* inner page hero — shorter */
@@ -128,14 +160,14 @@ li::marker { color: var(--sky); }
 .hero-inner-page p.hero-intro { font-size: 19px; }
 
 /* ---------- trust band ---------- */
-.trust-band { background: var(--navy); color: #fff; }
+.trust-band { background: var(--deep); color: #fff; }
 .trust-band .wrap {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-  padding-top: 22px; padding-bottom: 22px;
+  padding-top: 24px; padding-bottom: 24px;
 }
-.trust-item { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; }
+.trust-item { display: flex; align-items: center; gap: 12px; font-size: 19px; font-weight: 600; }
 .trust-check {
-  width: 30px; height: 30px; border-radius: 50%; background: var(--sky);
+  width: 30px; height: 30px; border-radius: 50%; background: var(--teal);
   color: #fff; display: inline-flex; align-items: center; justify-content: center;
   font-size: 18px; flex-shrink: 0;
 }
@@ -144,11 +176,25 @@ li::marker { color: var(--sky); }
 .section { padding: 72px 0; }
 .section-narrow { padding: 56px 0; }
 .section-alt { background: var(--paper-2); }
-.section-navy { background: var(--navy); color: #e6eef5; }
+.section-navy { background: var(--deep-2); color: #e3efea; }
 .section-navy h2, .section-navy h3 { color: #fff; }
 .section-navy p { color: #d5e3ee; }
-.section-head { max-width: 88ch; margin-bottom: 36px; }
+.section-head { max-width: 104ch; margin-bottom: 40px; }
 .section-head p { color: var(--muted); }
+
+/* ---------- text-image containers (design round) ----------
+   Wired by the builder via page.bodyImages; renders nothing until then.
+   .media-block: text one side, image opposite; .flip alternates the side.
+   .sticky (builder-applied, long sections only) pins the image while the
+   text scrolls. Mobile: one column, image stacks AFTER the text. */
+.media-block { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.media-block.flip .media-img-wrap { order: 2; }
+.media-img-wrap { min-width: 0; }
+.media-img {
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  aspect-ratio: 4 / 3; object-fit: cover; width: 100%; height: auto;
+}
+.media-block.sticky .media-img-wrap { position: sticky; top: 96px; }
 
 /* services grid */
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
@@ -158,32 +204,32 @@ li::marker { color: var(--sky); }
   display: flex; flex-direction: column;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(11, 37, 64, 0.18); }
-.card-media { aspect-ratio: 16 / 9; overflow: hidden; background: var(--navy-3); }
-.card-media img { width: 100%; height: 100%; height: auto; object-fit: cover; aspect-ratio: 16 / 9; }
-.card-body { padding: 24px 24px 26px; display: flex; flex-direction: column; flex: 1; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(11, 59, 58, 0.18); }
+.card-media { aspect-ratio: 16 / 9; overflow: hidden; background: var(--deep-3); }
+.card-media img { width: 100%; height: auto; object-fit: cover; aspect-ratio: 16 / 9; }
+.card-body { padding: 26px 26px 28px; display: flex; flex-direction: column; flex: 1; }
 .card-body h3 { font-size: 24px; margin-bottom: 10px; }
-.card-body h3 a { color: var(--navy); text-decoration: none; }
-.card-body h3 a:hover { color: var(--sky-dark); }
+.card-body h3 a { color: var(--deep); text-decoration: none; }
+.card-body h3 a:hover { color: var(--teal-dark); }
 .card-body p { color: var(--muted); flex: 1; }
-.card-link { font-weight: 700; color: var(--sky-dark); text-decoration: none; font-size: 18px; }
-.card-link:hover { color: var(--amber-dark); text-decoration: underline; }
+.card-link { font-weight: 700; color: var(--teal-link); text-decoration: none; font-size: 19px; }
+.card-link:hover { color: var(--teal-dark); text-decoration: underline; }
 
 /* process steps */
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; counter-reset: step; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; counter-reset: step; }
 .step {
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 26px 22px; box-shadow: var(--shadow);
+  padding: 28px 24px; box-shadow: var(--shadow);
 }
 .step-num {
-  width: 46px; height: 46px; border-radius: 50%; background: var(--navy); color: #fff;
+  width: 46px; height: 46px; border-radius: 50%; background: var(--deep); color: #fff;
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-head); font-size: 22px; font-weight: 700; margin-bottom: 14px;
 }
 .step h3 { font-size: 22px; margin-bottom: 8px; }
 .step-title {
   font-family: var(--font-head); font-size: 22px; font-weight: 650;
-  color: var(--navy); line-height: 1.2; margin: 0 0 8px;
+  color: var(--deep); line-height: 1.2; margin: 0 0 8px;
 }
 .step p { color: var(--muted); margin: 0; }
 
@@ -192,84 +238,127 @@ li::marker { color: var(--sky); }
 .split-media { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
 .split-media img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; }
 .check-list { list-style: none; padding: 0; }
-.check-list li { padding-left: 34px; position: relative; margin-bottom: 14px; }
+.check-list li { padding-left: 34px; position: relative; margin-bottom: 16px; }
 .check-list li::before {
   content: "✓"; position: absolute; left: 0; top: 2px;
-  width: 24px; height: 24px; border-radius: 50%; background: var(--sky);
+  width: 24px; height: 24px; border-radius: 50%; background: var(--teal);
   color: #fff; font-size: 15px; display: flex; align-items: center; justify-content: center;
 }
 
 /* cost table-ish list */
-.cost-list { list-style: none; padding: 0; max-width: 88ch; }
+.cost-list { list-style: none; padding: 0; max-width: 104ch; }
 .cost-list li {
   display: flex; justify-content: space-between; gap: 20px;
-  padding: 16px 4px; border-bottom: 1px solid var(--line); margin: 0;
+  padding: 18px 4px; border-bottom: 1px solid var(--line); margin: 0;
 }
 .cost-list li strong { font-weight: 650; }
-.cost-list li span { color: var(--sky-dark); font-weight: 700; white-space: nowrap; }
+.cost-list li span { color: var(--teal-dark); font-weight: 700; white-space: nowrap; }
 
 /* FAQ */
-.faq-list { max-width: 88ch; }
+.faq-list { max-width: 104ch; }
 .faq-item {
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
-  margin-bottom: 14px; overflow: hidden;
+  margin-bottom: 16px; overflow: hidden;
 }
 .faq-item summary {
-  cursor: pointer; padding: 20px 24px;
+  cursor: pointer; padding: 22px 24px;
   display: flex; justify-content: space-between; gap: 16px; align-items: center;
 }
 .faq-item summary h3 { margin: 0; font-size: 22px; }
 .faq-item summary::-webkit-details-marker { display: none; }
-.faq-item summary::after { content: "+"; font-size: 28px; color: var(--sky); flex-shrink: 0; }
+.faq-item summary::after { content: "+"; font-size: 28px; color: var(--teal); flex-shrink: 0; }
 .faq-item[open ] summary::after { content: "–"; }
 .faq-item .faq-answer { padding: 0 24px 22px; color: var(--muted); }
 .faq-item .faq-answer p { margin: 0; }
 
-/* final CTA */
-.final-cta { background: var(--navy); color: #fff; text-align: center; }
-.final-cta h2 { color: #fff; max-width: 28ch; margin-left: auto; margin-right: auto; }
-.final-cta p { color: #d5e3ee; max-width: 72ch; margin-left: auto; margin-right: auto; }
-.final-cta .hero-cta { justify-content: center; }
+/* final CTA — left-aligned like every other text block (design round) */
+.final-cta { background: var(--deep); color: #fff; }
+.final-cta h2 { color: #fff; max-width: 28ch; }
+/* FIX 4000 A-4 Round 3 (2026-11-13): final-CTA paragraph was the uncapped
+   worst paragraph on the other 9/40 pages — 72ch = 864px (VERIFY2). 50ch. */
+.final-cta p { color: #d5e3ee; max-width: 50ch; }
+/* FIX 4000 A-2 (2026-11-13): in-copy links inside the dark final-CTA were
+   teal #0A6B60 on #0B3B3A = 1.93:1 (Audit A, 3 links on 2 pages). Gold-light
+   #F2C14E on #0B3B3A measures 7.36:1 (computed, well above AA 4.5:1).
+   Scoped to <p> links only, so the tel buttons (.hero-cta .btn) are untouched. */
+.final-cta p a { color: #f2c14e; }
+.final-cta p a:hover { color: #fff; }
+.final-cta .hero-cta { justify-content: flex-start; }
+.final-cta .hero-cta .btn { flex: 0 1 300px; }
 
 /* breadcrumb */
 .breadcrumb { font-size: 17px; color: var(--muted); padding: 18px 0 0; }
-.breadcrumb a { color: var(--sky-dark); text-decoration: none; }
+/* 44px minimum tap target on the "Home" link (P3-10): inline-block with
+   12px vertical padding over a 20px line = 44px tall, without changing
+   the 17px breadcrumb type. */
+.breadcrumb a { color: var(--teal-link); text-decoration: none; display: inline-block; min-height: 44px; line-height: 20px; padding: 12px 4px; }
 .breadcrumb a:hover { text-decoration: underline; }
 
 /* inner page content */
 .page-body { padding: 56px 0 72px; }
 .page-body .lead { font-size: 20px; line-height: 1.7; color: var(--ink); }
-.related-links { margin-top: 8px; }
-.service-note {
-  background: #eaf4fa; border-left: 4px solid var(--sky);
-  padding: 20px 24px; border-radius: 0 12px 12px 0; margin: 28px 0;
+/* FIX 4000 A-1 (2026-11-13): contact form, doc tab 28 ("Contact Form
+   Fields: Name, Phone, Address, Describe the Water Damage, Submit").
+   Exactly those 5 fields, proper <label>s, no invented fields or copy.
+   Static export has no form handler — the form posts to the same URL and
+   no success messaging is faked (limitation noted in the fix findings). */
+.contact-form { max-width: 640px; }
+.contact-form .field { margin-bottom: 20px; }
+.contact-form label { display: block; font-weight: 700; margin-bottom: 6px; }
+.contact-form input, .contact-form textarea {
+  display: block; width: 100%; font: inherit; font-size: 19px; color: var(--ink);
+  background: #fff; border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px;
 }
-.service-note p { margin: 0; }
+.contact-form textarea { min-height: 140px; resize: vertical; }
+.related-links { margin-top: 8px; }
 
 /* footer */
-.site-footer { background: var(--navy-3); color: #c8d9e8; }
+/* footer — line-height 1.6 (19px round): the Services column lists 25 links;
+   body 1.8 would balloon the footer; 1.6 keeps link rows tight. Font sizes
+   untouched (links inherit 19px body; footer-bottom stays 17px). */
+.site-footer { background: var(--deep-3); color: #c9dcd6; line-height: 1.6; }
 .footer-grid {
-  display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 44px;
+  display: grid; grid-template-columns: 1fr 1.8fr 0.8fr; gap: 44px;
   padding: 56px 0 40px;
 }
+/* P2-1 grid weight (2026-11-13): the Services column needs the width —
+   at 1fr its two sub-columns are ~154px and nearly every label wraps to
+   two lines, leaving the footer ~925px. At 1.8fr the sub-columns are ~272px
+   so 24 of 25 labels fit on one line and the footer lands ~650px @1280.
+   About (1fr) and map (0.8fr, iframe still 260px tall) stay prominent;
+   the ≤1020px / ≤640px rules below still override this at smaller widths. */
 .site-footer h3 { color: #fff; font-size: 22px; }
-.site-footer a { color: #c8d9e8; text-decoration: none; }
+.site-footer a { color: #c9dcd6; text-decoration: none; }
 .site-footer a:hover { color: #fff; text-decoration: underline; }
-.site-footer ul { list-style: none; padding: 0; margin: 0; }
-.site-footer li { margin-bottom: 8px; }
+/* P2-1 (2026-11-13): the 25-link Services list is the footer's only ul.
+   Two columns + 17px links + 6px gaps cut the footer wall roughly in half.
+   Scoped to the ul so the About column links and footer-phone stay 19px/24px. */
+.site-footer ul { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 28px; line-height: 1.5; }
+/* FIX 4000 A-3 (2026-11-13): footer service links measured 20px tall
+   (Audit A). Inline-block + 24px line-height / min-height raises every
+   footer list link to a 24px tap target. */
+.site-footer ul a { font-size: 17px; display: inline-block; min-height: 24px; line-height: 24px; }
+/* OPT-C1 TAP-1 (2026-11-13): footer About/Contact links measured 23px
+   tall @390 (1px under the 24px WCAG AA bar). They are plain <p> links,
+   not in the Services <ul>, so the rule above does not reach them. Same
+   24px treatment, scoped to non-phone <p> links so the 24px footer-phone
+   link (own line-height) is untouched. */
+.site-footer p a:not(.footer-phone) { display: inline-block; min-height: 24px; line-height: 24px; }
+.site-footer li { margin-bottom: 6px; }
 .footer-phone { color: #fff; font-size: 24px; font-weight: 700; text-decoration: none; }
 .footer-map { border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(255,255,255,.15); }
 .footer-map iframe { width: 100%; height: 260px; border: 0; display: block; }
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.14);
-  padding: 20px 0 26px; font-size: 17px; color: #9db4c8;
+  padding: 20px 0 26px; font-size: 17px; color: #a8c6be;
   display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
 }
 
 /* sticky mobile call bar */
 .sticky-call {
   display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
-  background: var(--navy); border-top: 1px solid rgba(255,255,255,.15);
+  background: var(--deep); border-top: 1px solid rgba(255,255,255,.15);
   padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
   gap: 10px;
 }
@@ -278,16 +367,22 @@ li::marker { color: var(--sky); }
   min-height: 52px; border-radius: 10px; font-size: 16px; font-weight: 700;
   text-decoration: none; white-space: nowrap;
 }
-.sticky-call .sc-call { background: var(--amber-dark); color: #fff; }
+.sticky-call .sc-call { background: var(--coral); color: #fff; }
 .sticky-call .sc-help { background: transparent; color: #fff; border: 2px solid #fff; }
 
 /* ---------- responsive ---------- */
-@media (max-width: 1240px) {
+/* FIX 4000 A-7 (2026-11-13): the 8-link desktop nav + brand + phone needs
+   1359px of header width, but the content box is only viewport-48px, so at
+   1280 the phone link stuck out 103px (measured culprit: a.header-phone,
+   right edge 1383). The nav only fits from ~1407px up, so the hamburger
+   breakpoint is 1450px (was 1240px): desktop nav shows only where it fits,
+   the phone link stays visible at every width above 640px. */
+@media (max-width: 1450px) {
   .main-nav { display: none; }
   .nav-toggle { display: block; }
   .main-nav.open {
     display: flex; position: absolute; top: 72px; left: 0; right: 0;
-    background: var(--navy); flex-direction: column; padding: 12px 24px 20px;
+    background: var(--deep); flex-direction: column; padding: 12px 24px 20px;
     border-bottom: 1px solid rgba(255,255,255,.15);
   }
   .main-nav.open a { padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,.08); }
@@ -311,38 +406,110 @@ li::marker { color: var(--sky); }
   .brand-sub { font-size: 11px; }
   .nav-toggle { padding: 8px 10px; flex-shrink: 0; }
   /* Mobile hero trim (10x QA): saves ~50px so both hero buttons fit above the
-     fold on the homepage at 390x844. No content cut, no text below 18px. */
-  .hero-inner { padding: 40px 20px 48px; }
-  .hero p.hero-intro { font-size: 18px; margin-bottom: 20px; }
+     fold on the homepage at 390x844. No content cut. (19px round: the intro
+     no longer drops to 18px here — body text is 19px at every width. The
+     19px bump also pushed 3 routes above the 390x844 fold (+17px), so the
+     ≤640px trim now also tightens intro line-height/margin, hero top
+     padding, CTA gap and button height — spacing only, no text resized.) */
+  .hero-inner { padding: 36px 20px 48px; }
+  .hero p.hero-intro { font-size: 19px; line-height: 1.65; margin-bottom: 16px; }
+  /* P3-2 (2026-11-13): the open menu sat at top: 72px (see ≤1450px block)
+     but the header is 65px @390, leaving a 7px sliver of hero visible
+     between header and menu. 64px here = header min-height 64px + its 1px
+     border, so the menu tucks 1px under the header with no gap. */
+  .main-nav.open { top: 64px; }
   .section { padding: 52px 0; }
   .cards { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }
   .trust-band .wrap { grid-template-columns: 1fr; gap: 12px; }
   .footer-grid { grid-template-columns: 1fr; }
   .header-phone { display: none; }
-  /* Sticky bar shows only once the hero scrolls out (see StickyCall.js). */
+  /* Sticky bar shows only once the hero scrolls out (see StickyCall.js).
+     P3-1 (2026-11-13): the 74px offset applies ONLY while the bar is
+     visible — at scroll 0 the bar is hidden and the padding left a 74px
+     dead band after the footer on every mobile page. */
   .sticky-call.visible { display: flex; }
-  body { padding-bottom: 74px; }
-  .btn { width: 100%; }
-  .hero-cta { flex-direction: column; }
+  body:has(.sticky-call.visible) { padding-bottom: 74px; }
+  .btn { width: 100%; min-height: 52px; }
+  .hero-cta { flex-direction: column; gap: 12px; }
+  /* P3-3 (2026-11-13): homepage hero only (inner pages carry
+     .hero-inner-page). The hero was 880px @390 so the hero-note was cut
+     mid-sentence at the 844px fold. 40px of spacing trimmed ABOVE the note
+     — top pad 36→16, intro margin 16→8, CTA gap 12→8, note margin 20→12 —
+     so the note lands fully inside the fold. Placed AFTER the base
+     .hero-cta rule so the gap trim is not overridden by source order, and
+     :where() keeps specificity at the base rules' level so the ≤380px
+     trims below still win at 320px (intro margin is restated there
+     explicitly). No text resized, no words cut. */
+  :where(.hero:not(.hero-inner-page)) .hero-inner { padding-top: 16px; }
+  :where(.hero:not(.hero-inner-page)) .hero p.hero-intro { margin-bottom: 8px; }
+  :where(.hero:not(.hero-inner-page)) .hero-cta { gap: 8px; }
+  :where(.hero:not(.hero-inner-page)) .hero-note { margin-top: 12px; }
+  /* Text-image containers: one column, image stacks AFTER the text. */
+  .media-block { grid-template-columns: 1fr; gap: 24px; }
+  .media-block .media-text { order: 1; }
+  .media-block .media-img-wrap { order: 2; }
+  .media-block.sticky .media-img-wrap { position: static; }
   .cost-list li { flex-direction: column; gap: 2px; }
   .cost-list li span { white-space: normal; }
 }
 /* 320px header compaction (10x QA): brand + toggle overflowed 54px at 320px. */
 @media (max-width: 380px) {
-  .header-inner { padding: 0 12px; gap: 8px; min-height: 56px; }
+  .header-inner { padding: 0 12px; gap: 8px; min-height: 52px; }
   .brand { gap: 8px; }
   .brand-mark { width: 32px; height: 32px; }
   .brand-name { font-size: 16px; }
   .nav-toggle { padding: 8px; font-size: 14px; }
-  /* 320px hero trim (Round 2 QA): Button 2 bottom was 941px at 320x844 — 97px below
-     the fold. Eyebrow wraps 3 lines at 320 (letter-spacing 2.5px), H1 4 lines,
-     intro 13 lines. Trims only spacing/sizing above the buttons; no content cut,
-     no text below 18px except the eyebrow micro-label (15px, unchanged size). */
-  .hero-inner { padding-top: 28px; }
-  .hero .eyebrow { letter-spacing: 1.2px; margin-bottom: 10px; }
-  .hero h1 { font-size: 30px; margin-bottom: 14px; }
-  .hero p.hero-intro { line-height: 1.6; margin-bottom: 14px; }
+  /* 320px hero trim (design round, tightened in the 19px round): Button 2
+     bottom was below the 700px fold on 10/40 pages at 18px and 21/40 at
+     19px (worst +84px). Trims only spacing above the buttons — smaller hero
+     padding (incl. 16px side gutters, widening the text column so long
+     intros reflow shorter), tighter eyebrow/H1/intro margins, intro
+     line-height 1.45, CTA gap 10px, buttons 48px tall (still >44px touch
+     target, padding 11px vertical). No content cut, no text below 19px
+     except the eyebrow micro-label (15px, unchanged size). Headings
+     untouched (H1 stays 28px here).
+     P3-1 fix (2026-11-13): commercial was the last route below the fold
+     at 320x700 (B2 706px, +6px). Two more spacing-only trims, 6px each:
+     inner-page hero top padding 8px→2px and intro margin-bottom 8px→2px
+     (one intro paragraph per page, so exactly 6px per page). Global ≤380px
+     trim — no clean route identifier exists in the rendered markup, and
+     moving buttons UP cannot push any other route below the fold; all 40
+     routes re-measured after the change. */
+  .hero-inner { padding: 8px 16px 40px; }
+  /* Inner-page hero needs the same override: the base
+     .hero-inner-page .hero-inner rule (64px top) outranks the plain
+     .hero-inner rule above by specificity, so it must be restated here. */
+  .hero-inner-page .hero-inner { padding: 2px 16px 40px; }
+  .hero .eyebrow { letter-spacing: 1px; margin-bottom: 4px; }
+  .hero h1 { font-size: 28px; margin-bottom: 8px; }
+  .hero p.hero-intro { line-height: 1.45; margin-bottom: 2px; }
+  /* P3-2 (2026-11-13): header is 53px @320 (52px min-height + 1px border);
+     menu tucks 1px under it, no sliver. */
+  .main-nav.open { top: 52px; }
+  /* P3-3 restatement: the ≤640px homepage intro trim (margin-bottom 8px,
+     specificity 0,2,1) would otherwise beat this block's 2px at 320px.
+     Restated here at equal specificity so the 320px trim stands. */
+  :where(.hero:not(.hero-inner-page)) .hero p.hero-intro { margin-bottom: 2px; }
+  .hero-cta { gap: 10px; }
+  .hero-cta .btn { min-height: 48px; padding-top: 11px; padding-bottom: 11px; }
+}
+/* OPT-C2 B2-390 (2026-11-13): hero Button 2 sat 26px below the fold @390 on
+   3 inner pages (appliance-leak, commercial, finished-basement — stable
+   across 3 runs each; 320/768/1280/1920 were already in-fold). At 381–640px
+   the inner-page hero still carried the desktop 64px top / 66px bottom
+   padding (the .hero-inner-page rule outranks the ≤640px .hero-inner trim).
+   Trim 33px top + 35px bottom = 68px off the hero stack, spacing only —
+   no text resized, no words changed. (First cut was 50px; re-measure showed
+   finished-basement still +1.6px below the fold at the audit's 390x800
+   viewport, so 12px more was trimmed → −4.4px; a further 6px was then
+   trimmed for margin, finished-basement now ~10px inside the fold at
+   800px height.) Band starts at 381px so the ≤380px
+   trims (which already pass @320) are untouched; moving buttons UP cannot
+   push any other route below the fold. Placed after the ≤380px block so it
+   wins at 381–640px. */
+@media (min-width: 381px) and (max-width: 640px) {
+  .hero-inner-page .hero-inner { padding: 31px 20px 31px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
