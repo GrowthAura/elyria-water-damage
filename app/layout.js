@@ -41,7 +41,7 @@ export default function RootLayout({ children }) {
                   <a href="/contact">Contact</a>
                 </p>
               </div>
-              <div>
+              <div id="footer-services">
                 <h3>Services</h3>
                 <ul>
                   {FOOTER_SERVICES.map((s) => (

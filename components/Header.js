@@ -1,9 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
-import { PHONE, PHONE_TEL } from "../lib/data";
+import { useEffect, useRef, useState } from "react";
+import { PHONE, PHONE_TEL, HEADER_SERVICES } from "../lib/data";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const dropRef = useRef(null);
   // Menu closes on Escape and on scroll (standing rule + master checklist gate 4).
   // While open, lock body scroll so the page does not scroll behind the menu
   // (Round 3 QA: scroll lock was missing).
@@ -23,6 +25,29 @@ export default function Header() {
       window.removeEventListener("scroll", onScroll);
     };
   }, [open ]);
+  // Services dropdown closes on Escape, outside click, and scroll.
+  useEffect(() => {
+    if (!servicesOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setServicesOpen(false);
+    };
+    const onClick = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) setServicesOpen(false);
+    };
+    const onScroll = () => setServicesOpen(false);
+    window.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onClick);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onClick);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [servicesOpen ]);
+  const closeAll = () => {
+    setOpen(false);
+    setServicesOpen(false);
+  };
   return (
     <header className="site-header">
       <div className="header-inner">
@@ -39,24 +64,56 @@ export default function Header() {
           </span>
         </a>
         <nav className={`main-nav${open ? " open" : ""}`} id="main-nav" aria-label="Main navigation">
-          <a href="/emergency-water-extraction" onClick={() => setOpen(false)}>Emergency</a>
-          <a href="/flooded-basement-cleanup" onClick={() => setOpen(false)}>Flooded Basement</a>
-          <a href="/burst-pipe-water-damage" onClick={() => setOpen(false)}>Burst Pipe</a>
-          <a href="/sewage-backup-cleanup" onClick={() => setOpen(false)}>Sewage Backup</a>
-          <a href="/mold-remediation" onClick={() => setOpen(false)}>Mold Remediation</a>
-          {/* FIX 4000 A-7 (2026-11-13): header had only 5 service links; About,
-              Contact and Blog now link from the header (desktop + mobile menu).
-              No blog hub route exists, so Blog points at the first blog post
-              (tab 29); a hub would be a new route, out of scope. */}
-          <a href="/about" onClick={() => setOpen(false)}>About</a>
-          <a href="/contact" onClick={() => setOpen(false)}>Contact</a>
-          <a href="/blog/water-damage-restoration-cost-elyria" onClick={() => setOpen(false)}>Blog</a>
+          {/* Services menu: ONLY the 7 most important services (HEADER_SERVICES,
+              doc tab titles, same labels as the footer). The other 18 services
+              live in the footer only. Desktop: click opens a panel under the
+              button. Mobile: the same button expands an accordion inside the
+              hamburger panel. */}
+          <div className="nav-dropdown" ref={dropRef}>
+            <button
+              type="button"
+              className="nav-drop-btn"
+              aria-expanded={servicesOpen}
+              aria-haspopup="true"
+              aria-controls="services-menu"
+              onClick={() => setServicesOpen((v) => !v)}
+            >
+              Services <span className="nav-chevron" aria-hidden="true">▾</span>
+            </button>
+            <div className={`nav-drop-panel${servicesOpen ? " open" : ""}`} id="services-menu">
+              {HEADER_SERVICES.map((s) => (
+                <a key={s.href} href={s.href} onClick={closeAll}>{s.label}</a>
+              ))}
+              <a
+                className="nav-drop-all"
+                href="#footer-services"
+                onClick={(e) => {
+                  // Native anchor jump would fail: closeAll hides the panel
+                  // (display:none) before the browser's default scroll runs,
+                  // leaving the target with no layout box. Scroll by hand.
+                  // Deferred 50ms: the menu's body-scroll lock is only
+                  // released after React commits the close, so an immediate
+                  // scrollIntoView would be clamped while overflow is hidden.
+                  e.preventDefault();
+                  closeAll();
+                  setTimeout(() => {
+                    document.getElementById("footer-services")?.scrollIntoView();
+                  }, 50);
+                }}
+              >
+                All Services ↓
+              </a>
+            </div>
+          </div>
+          <a href="/about" onClick={closeAll}>About</a>
+          <a href="/contact" onClick={closeAll}>Contact</a>
+          <a href="/blog/water-damage-restoration-cost-elyria" onClick={closeAll}>Blog</a>
         </nav>
         <button
           className="nav-toggle"
           aria-label="Open menu"
           aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => { setOpen((v) => !v); setServicesOpen(false); }}
         >
           ☰ Menu
         </button>
