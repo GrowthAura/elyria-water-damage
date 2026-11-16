@@ -2,8 +2,11 @@
    Deep lake-teal palette + warm paper + coral CTA. 19px body sitewide.
    Contrast verified by qa/contrast-design.py — every text pair AA >= 4.5:1,
    body text >= 7:1. Gold #B97F0A is decorative only, never as text.
-   Layout: wide left-aligned editorial lines (prose 104ch), no centered
-   text blocks. */
+   Layout: wide left-aligned editorial lines. DESIGN CYCLE 3 (2026-11-16,
+   Noorullah's direct order): prose + headings run FULL header width
+   (1232px content at 1280/1920) — the 4000% pass 50ch/72ch caps are
+   SUPERSEDED and removed, not tightened. Readability is carried by
+   line-height 1.85 + 20px paragraph spacing instead of narrow columns. */
 :root {
   --deep: #0b3b3a;
   --deep-2: #0e4a46;
@@ -31,7 +34,7 @@ body {
   margin: 0;
   font-family: var(--font-body);
   font-size: 19px;
-  line-height: 1.8;
+  line-height: 1.85;
   color: var(--ink);
   background: var(--paper);
   -webkit-font-smoothing: antialiased;
@@ -47,27 +50,25 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 650;
 }
 h1 { font-size: 52px; letter-spacing: -0.5px; }
-h2 { font-size: 36px; letter-spacing: -0.3px; margin-bottom: 20px; }
-h3 { font-size: 26px; }
-p { margin: 0 0 18px; }
+h2 { font-size: 40px; letter-spacing: -0.3px; margin-bottom: 20px; }
+h3 { font-size: 27px; }
+p { margin: 0 0 20px; }
 ul, ol { margin: 0 0 18px; padding-left: 24px; }
 li { margin-bottom: 10px; }
 li::marker { color: var(--teal); }
 .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
-.prose { max-width: 104ch; }
-/* FIX 4000 A-4 (2026-11-13, re-cap Fix Round 2): body paragraphs rendered
-   97–109 chars/line @1280 (independent re-verification). Root cause: the
-   72ch cap computes to 864px in Inter at 19px (1ch ≈ 12px) while body
-   characters average ~8.4px, so a full line holds ~103 chars. The first
-   fix's "max 77" came from a faulty width estimator (~11.1px/char).
-   Re-capped to 50ch (≈600px): the first 56ch attempt measured worst 86
-   chars/line (probe-fix2-after) — 56ch computes to exactly 672px but the
-   densest lines hold 86 chars there (≈7.8px/char, not the verifier's
-   ~8.4px average; the canvas average also under-reads at 80–81 vs the
-   exact 84–86 range walk). 600px scales the worst line to ≈77 chars,
-   inside the ≤80 bar with margin. Same scope — paragraphs and lists only. */
-.prose > p, .media-text > p, .section-head > p, .faq-answer > p, p.prose { max-width: 50ch; }
-.prose > ul, .media-text > ul { max-width: 50ch; }
+/* DESIGN CYCLE 3 (2026-11-16, his direct order — TEXT WIDE): prose runs
+   the FULL header content width (1232px at 1280 and 1920). The 4000%
+   pass 50ch caps (≈600px, 68–77 chars/line) and the 104ch container caps
+   are REMOVED here and everywhere below (section-head, faq-list,
+   cost-list, hero intro, final-CTA p). Readability is carried by
+   line-height 1.85 + 20px paragraph spacing, not by narrow columns.
+   NOTE: this must stay 1280px, NOT none — .prose shares its element
+   with .wrap (div.wrap.prose), and max-width:none here would beat
+   .wrap's 1280px cap (same specificity, later rule) and let prose run
+   1872px wide at a 1920 viewport. 1280px == the wrap cap, so the
+   content width is exactly the header's 1232px at every viewport. */
+.prose { max-width: 1280px; }
 .eyebrow {
   font-size: 15px; font-weight: 700; letter-spacing: 2.5px;
   text-transform: uppercase; color: var(--teal); margin-bottom: 14px;
@@ -124,20 +125,22 @@ li::marker { color: var(--teal); }
 .hero-media img { width: 100%; height: 100%; object-fit: cover; }
 .hero-media::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(90deg, rgba(8, 46, 45, 0.93) 0%, rgba(8, 46, 45, 0.78) 55%, rgba(8, 46, 45, 0.45) 100%);
+  /* Cycle 3: scrim strengthened (0.85 mid / 0.62 far) — the hero intro
+     now runs full width, so text reaches the lighter right side. */
+  background: linear-gradient(90deg, rgba(8, 46, 45, 0.95) 0%, rgba(8, 46, 45, 0.85) 55%, rgba(8, 46, 45, 0.62) 100%);
 }
-.hero-inner { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; padding: 84px 24px 88px; }
+.hero-inner { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; padding: 96px 24px 104px; }
 .hero-inner .eyebrow { color: var(--gold-light); }
-.hero h1 { color: #fff; max-width: 24ch; margin-bottom: 20px; }
-/* FIX 4000 A-4 Round 3 (2026-11-13): hero intro was the uncapped worst
-   paragraph on 31/40 pages — 72ch = 864px measured 92–104 chars/line
-   (VERIFY2 range-walk). Capped to 50ch like all other body copy. */
-.hero p.hero-intro { color: #e3efea; max-width: 50ch; font-size: 19px; line-height: 1.75; margin-bottom: 30px; }
+/* Cycle 3: H1 + intro run full hero width (was 24ch / 50ch). */
+.hero h1 { color: #fff; max-width: none; margin-bottom: 20px; }
+.hero p.hero-intro { color: #e3efea; max-width: none; font-size: 19px; line-height: 1.75; margin-bottom: 30px; }
 /* Equal-share hero buttons (design round): both buttons flex:1 inside a
-   640px container, so Button 1 and Button 2 are always the same width on
-   desktop whatever their label length (longest label 27 chars fits one line
-   at 312px). Single-button bands keep a capped button (see .final-cta). */
-.hero-cta { display: flex; gap: 16px; flex-wrap: wrap; align-items: stretch; max-width: 640px; }
+   780px container (Cycle 3: was 640px — the hero text is full-width now,
+   so the CTA row widens to match), so Button 1 and Button 2 are always
+   the same width on desktop whatever their label length (longest label
+   27 chars fits one line at ~372px). Single-button bands keep a capped
+   button (see .final-cta). */
+.hero-cta { display: flex; gap: 16px; flex-wrap: wrap; align-items: stretch; max-width: 780px; }
 .hero-cta .btn { flex: 1 1 0; min-width: 0; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -145,7 +148,7 @@ li::marker { color: var(--teal); }
   font-size: 19px; font-weight: 700; text-decoration: none; line-height: 1.3;
   border: 2px solid transparent; cursor: pointer; text-align: center;
 }
-.btn-call { background: var(--coral); color: #fff; }
+.btn-call { background: var(--coral); color: #fff; box-shadow: 0 6px 20px rgba(194, 64, 31, 0.35); }
 /* coral (#c2401f) not a brighter orange: white-on-coral is 5.19:1, above
    WCAG AA 4.5:1 for the 19px button text; coral-dark is 6.58:1. */
 .btn-call:hover { background: var(--coral-dark); color: #fff; }
@@ -155,49 +158,73 @@ li::marker { color: var(--teal); }
 .hero-note strong { color: #fff; }
 
 /* inner page hero — shorter */
-.hero-inner-page .hero-inner { padding: 64px 24px 66px; }
+.hero-inner-page .hero-inner { padding: 72px 24px 78px; }
 .hero-inner-page h1 { font-size: 46px; }
 .hero-inner-page p.hero-intro { font-size: 19px; }
 
 /* ---------- trust band ---------- */
 .trust-band { background: var(--deep); color: #fff; }
 .trust-band .wrap {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-  padding-top: 24px; padding-bottom: 24px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px;
+  padding-top: 30px; padding-bottom: 30px;
 }
-.trust-item { display: flex; align-items: center; gap: 12px; font-size: 19px; font-weight: 600; }
+.trust-item { display: flex; align-items: center; gap: 14px; font-size: 19px; font-weight: 600; }
 .trust-check {
-  width: 30px; height: 30px; border-radius: 50%; background: var(--teal);
+  width: 34px; height: 34px; border-radius: 50%; background: var(--teal);
   color: #fff; display: inline-flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
+  font-size: 19px; flex-shrink: 0;
 }
 
 /* ---------- sections ---------- */
-.section { padding: 72px 0; }
-.section-narrow { padding: 56px 0; }
-.section-alt { background: var(--paper-2); }
+/* Cycle 3: roomier sections (72px -> 84px), hairline rhythm on alt
+   sections, and a 56px teal accent rule under every section H2 — the
+   one decorative mark shared by all sections, headings stay verbatim. */
+.section { padding: 84px 0; }
+.section-narrow { padding: 64px 0; }
+.section-alt { background: var(--paper-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .section-navy { background: var(--deep-2); color: #e3efea; }
 .section-navy h2, .section-navy h3 { color: #fff; }
 .section-navy p { color: #d5e3ee; }
-.section-head { max-width: 104ch; margin-bottom: 40px; }
+.section-head { max-width: none; margin-bottom: 48px; }
 .section-head p { color: var(--muted); }
+.section-head h2::after, .wrap.prose > h2::after, .media-text > h2::after {
+  content: ""; display: block; width: 56px; height: 4px; border-radius: 2px;
+  background: var(--teal); margin-top: 18px;
+}
 
-/* ---------- text-image containers (design round) ----------
-   Wired by the builder via page.bodyImages; renders nothing until then.
-   .media-block: text one side, image opposite; .flip alternates the side.
-   .sticky (builder-applied, long sections only) pins the image while the
-   text scrolls. Mobile: one column, image stacks AFTER the text. */
-.media-block { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+/* ---------- text-image containers: THE STICKY-SPLIT PATTERN ----------
+   (Design Cycle 3 definition, for the image worker who wires
+   page.bodyImages with sticky:true on long sections.)
+   - Desktop >= 821px: two columns, text one side / image opposite
+     (.flip alternates the side); the image column pins at top: 96px
+     (below the 72px sticky header + breathing room) while the text
+     scrolls, and releases when its section ends (normal sticky flow).
+   - Below 821px: the image is STATIC (base position) — never sticky.
+   - Mobile <= 640px: one column, image stacks AFTER the text.
+   SLOT (what the image worker sizes to — aspect-ratio 4/3, object-fit
+   cover, width 100% of its column):
+     @1280 desktop: column (1232 - 56 gap) / 2 = 588px wide x 441px tall.
+     @390  mobile:  full width 342px (390 - 48 wrap gutters) x 257px tall.
+   The image is 441px tall at desktop, so it always fits the viewport
+   while pinned; the text column beside it is longer, which is what
+   makes the pin visible. Wired by the builder via page.bodyImages;
+   renders nothing until then. */
+.media-block { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
 .media-block.flip .media-img-wrap { order: 2; }
 .media-img-wrap { min-width: 0; }
 .media-img {
   border-radius: var(--radius); box-shadow: var(--shadow);
   aspect-ratio: 4 / 3; object-fit: cover; width: 100%; height: auto;
 }
-.media-block.sticky .media-img-wrap { position: sticky; top: 96px; }
+/* Sticky is OFF by default and switches ON only at >= 821px, so no
+   narrow viewport ever gets a pinned image. */
+.media-block.sticky .media-img-wrap { position: static; }
+@media (min-width: 821px) {
+  .media-block.sticky .media-img-wrap { position: sticky; top: 96px; }
+}
 
 /* services grid */
-.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
 .card {
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
   overflow: hidden; box-shadow: var(--shadow);
@@ -206,77 +233,83 @@ li::marker { color: var(--teal); }
 }
 .card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(11, 59, 58, 0.18); }
 .card-media { aspect-ratio: 16 / 9; overflow: hidden; background: var(--deep-3); }
-.card-media img { width: 100%; height: auto; object-fit: cover; aspect-ratio: 16 / 9; }
-.card-body { padding: 26px 26px 28px; display: flex; flex-direction: column; flex: 1; }
-.card-body h3 { font-size: 24px; margin-bottom: 10px; }
+.card-media img { width: 100%; height: auto; object-fit: cover; aspect-ratio: 16 / 9; transition: transform 0.35s ease; }
+.card:hover .card-media img { transform: scale(1.04); }
+.card-body { padding: 30px 30px 32px; display: flex; flex-direction: column; flex: 1; }
+.card-body h3 { font-size: 25px; margin-bottom: 10px; }
 .card-body h3 a { color: var(--deep); text-decoration: none; }
 .card-body h3 a:hover { color: var(--teal-dark); }
 .card-body p { color: var(--muted); flex: 1; }
 .card-link { font-weight: 700; color: var(--teal-link); text-decoration: none; font-size: 19px; }
+/* OPT-C4 FIX-1 (2026-11-16, Auditor A P3-1): the last word + "→" of a
+   service-card label never breaks apart, so the arrow can never sit alone
+   on a line. The tail is at most ~137px ("remediation →"), far under the
+   narrowest card text width (210px @320), so it can never overflow. */
+.card-link-tail { white-space: nowrap; }
 .card-link:hover { color: var(--teal-dark); text-decoration: underline; }
 
 /* process steps */
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; counter-reset: step; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; counter-reset: step; }
 .step {
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 28px 24px; box-shadow: var(--shadow);
+  padding: 32px 28px; box-shadow: var(--shadow);
 }
 .step-num {
-  width: 46px; height: 46px; border-radius: 50%; background: var(--deep); color: #fff;
+  width: 52px; height: 52px; border-radius: 50%; background: var(--deep); color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-head); font-size: 22px; font-weight: 700; margin-bottom: 14px;
+  font-family: var(--font-head); font-size: 24px; font-weight: 700; margin-bottom: 16px;
 }
-.step h3 { font-size: 22px; margin-bottom: 8px; }
+.step h3 { font-size: 23px; margin-bottom: 8px; }
 .step-title {
-  font-family: var(--font-head); font-size: 22px; font-weight: 650;
+  font-family: var(--font-head); font-size: 23px; font-weight: 650;
   color: var(--deep); line-height: 1.2; margin: 0 0 8px;
 }
 .step p { color: var(--muted); margin: 0; }
 
 /* two-column split */
-.split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
 .split-media { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
 .split-media img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; }
 .check-list { list-style: none; padding: 0; }
-.check-list li { padding-left: 34px; position: relative; margin-bottom: 16px; }
+.check-list li { padding-left: 36px; position: relative; margin-bottom: 18px; }
 .check-list li::before {
   content: "✓"; position: absolute; left: 0; top: 2px;
-  width: 24px; height: 24px; border-radius: 50%; background: var(--teal);
-  color: #fff; font-size: 15px; display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%; background: var(--teal);
+  color: #fff; font-size: 16px; display: flex; align-items: center; justify-content: center;
 }
 
 /* cost table-ish list */
-.cost-list { list-style: none; padding: 0; max-width: 104ch; }
+.cost-list { list-style: none; padding: 0; max-width: none; }
 .cost-list li {
   display: flex; justify-content: space-between; gap: 20px;
-  padding: 18px 4px; border-bottom: 1px solid var(--line); margin: 0;
+  padding: 20px 16px; border-bottom: 1px solid var(--line); margin: 0;
 }
+.cost-list li:nth-child(odd) { background: var(--paper); border-radius: 10px; }
 .cost-list li strong { font-weight: 650; }
 .cost-list li span { color: var(--teal-dark); font-weight: 700; white-space: nowrap; }
 
 /* FAQ */
-.faq-list { max-width: 104ch; }
+.faq-list { max-width: none; }
 .faq-item {
-  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
-  margin-bottom: 16px; overflow: hidden;
+  background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: var(--radius);
+  margin-bottom: 18px; overflow: hidden;
 }
 .faq-item summary {
-  cursor: pointer; padding: 22px 24px;
+  cursor: pointer; padding: 24px 26px;
   display: flex; justify-content: space-between; gap: 16px; align-items: center;
 }
-.faq-item summary h3 { margin: 0; font-size: 22px; }
+.faq-item summary h3 { margin: 0; font-size: 23px; }
 .faq-item summary::-webkit-details-marker { display: none; }
 .faq-item summary::after { content: "+"; font-size: 28px; color: var(--teal); flex-shrink: 0; }
 .faq-item[open ] summary::after { content: "–"; }
-.faq-item .faq-answer { padding: 0 24px 22px; color: var(--muted); }
+.faq-item .faq-answer { padding: 0 26px 24px; color: var(--muted); }
 .faq-item .faq-answer p { margin: 0; }
 
 /* final CTA — left-aligned like every other text block (design round) */
-.final-cta { background: var(--deep); color: #fff; }
-.final-cta h2 { color: #fff; max-width: 28ch; }
-/* FIX 4000 A-4 Round 3 (2026-11-13): final-CTA paragraph was the uncapped
-   worst paragraph on the other 9/40 pages — 72ch = 864px (VERIFY2). 50ch. */
-.final-cta p { color: #d5e3ee; max-width: 50ch; }
+.final-cta { background: linear-gradient(135deg, var(--deep) 0%, var(--deep-2) 100%); color: #fff; }
+.final-cta h2 { color: #fff; max-width: none; }
+/* Cycle 3: final-CTA paragraph runs full width too (was 50ch). */
+.final-cta p { color: #d5e3ee; max-width: none; }
 /* FIX 4000 A-2 (2026-11-13): in-copy links inside the dark final-CTA were
    teal #0A6B60 on #0B3B3A = 1.93:1 (Audit A, 3 links on 2 pages). Gold-light
    #F2C14E on #0B3B3A measures 7.36:1 (computed, well above AA 4.5:1).
@@ -284,7 +317,7 @@ li::marker { color: var(--teal); }
 .final-cta p a { color: #f2c14e; }
 .final-cta p a:hover { color: #fff; }
 .final-cta .hero-cta { justify-content: flex-start; }
-.final-cta .hero-cta .btn { flex: 0 1 300px; }
+.final-cta .hero-cta .btn { flex: 0 1 372px; }
 
 /* breadcrumb */
 .breadcrumb { font-size: 17px; color: var(--muted); padding: 18px 0 0; }
@@ -320,7 +353,7 @@ li::marker { color: var(--teal); }
 .site-footer { background: var(--deep-3); color: #c9dcd6; line-height: 1.6; }
 .footer-grid {
   display: grid; grid-template-columns: 1fr 1.8fr 0.8fr; gap: 44px;
-  padding: 56px 0 40px;
+  padding: 64px 0 44px;
 }
 /* P2-1 grid weight (2026-11-13): the Services column needs the width —
    at 1fr its two sub-columns are ~154px and nearly every label wraps to
@@ -441,15 +474,22 @@ li::marker { color: var(--teal); }
      :where() keeps specificity at the base rules' level so the ≤380px
      trims below still win at 320px (intro margin is restated there
      explicitly). No text resized, no words cut. */
-  :where(.hero:not(.hero-inner-page)) .hero-inner { padding-top: 16px; }
+  :where(.hero:not(.hero-inner-page)) .hero-inner { padding-top: 16px; padding-bottom: 38px; }
+  /* Cycle 3 (2026-11-16): the body line-height 1.8->1.85 grew the
+     homepage hero 848->855px @390, pushing the hero-note bottom to
+     852px — 8px past the 844 fold the P3-3 trim had secured. The note
+     sits on the stack ABOVE it, so bottom padding cannot move it:
+     note line-height 1.85->1.7 (3 lines, -9px) + margin-top 12->10px
+     pulls its bottom to ~841px. Spacing/leading only, no words cut. */
   :where(.hero:not(.hero-inner-page)) .hero p.hero-intro { margin-bottom: 8px; }
   :where(.hero:not(.hero-inner-page)) .hero-cta { gap: 8px; }
-  :where(.hero:not(.hero-inner-page)) .hero-note { margin-top: 12px; }
-  /* Text-image containers: one column, image stacks AFTER the text. */
+  :where(.hero:not(.hero-inner-page)) .hero-note { margin-top: 10px; line-height: 1.7; }
+  /* Text-image containers: one column, image stacks AFTER the text.
+     (Sticky is already static in the base rule; it only switches on
+     at >= 821px.) */
   .media-block { grid-template-columns: 1fr; gap: 24px; }
   .media-block .media-text { order: 1; }
   .media-block .media-img-wrap { order: 2; }
-  .media-block.sticky .media-img-wrap { position: static; }
   .cost-list li { flex-direction: column; gap: 2px; }
   .cost-list li span { white-space: normal; }
 }
@@ -478,7 +518,7 @@ li::marker { color: var(--teal); }
      routes re-measured after the change. */
   .hero-inner { padding: 8px 16px 40px; }
   /* Inner-page hero needs the same override: the base
-     .hero-inner-page .hero-inner rule (64px top) outranks the plain
+     .hero-inner-page .hero-inner rule (72px top) outranks the plain
      .hero-inner rule above by specificity, so it must be restated here. */
   .hero-inner-page .hero-inner { padding: 2px 16px 40px; }
   .hero .eyebrow { letter-spacing: 1px; margin-bottom: 4px; }
@@ -494,22 +534,24 @@ li::marker { color: var(--teal); }
   .hero-cta { gap: 10px; }
   .hero-cta .btn { min-height: 48px; padding-top: 11px; padding-bottom: 11px; }
 }
-/* OPT-C2 B2-390 (2026-11-13): hero Button 2 sat 26px below the fold @390 on
-   3 inner pages (appliance-leak, commercial, finished-basement — stable
-   across 3 runs each; 320/768/1280/1920 were already in-fold). At 381–640px
-   the inner-page hero still carried the desktop 64px top / 66px bottom
-   padding (the .hero-inner-page rule outranks the ≤640px .hero-inner trim).
-   Trim 33px top + 35px bottom = 68px off the hero stack, spacing only —
-   no text resized, no words changed. (First cut was 50px; re-measure showed
-   finished-basement still +1.6px below the fold at the audit's 390x800
-   viewport, so 12px more was trimmed → −4.4px; a further 6px was then
-   trimmed for margin, finished-basement now ~10px inside the fold at
-   800px height.) Band starts at 381px so the ≤380px
-   trims (which already pass @320) are untouched; moving buttons UP cannot
-   push any other route below the fold. Placed after the ≤380px block so it
-   wins at 381–640px. */
+/* OPT-C2 B2-390 (2026-11-13, superseded by Cycle 3 below): hero Button 2
+   sat 26px below the fold @390 on 3 inner pages; the 31px padding fixed
+   it then. Cycle 3 re-trims the same band for the P2-1 hero-cover fix. */
 @media (min-width: 381px) and (max-width: 640px) {
-  .hero-inner-page .hero-inner { padding: 31px 20px 31px; }
+  /* DESIGN CYCLE 3, P2-1 (2026-11-16): the inner-page hero slot was
+     718px @390 on /emergency-water-extraction while its original is
+     only 650px tall — even the original upscaled 1.10x. Spacing-only
+     trims (~-70px: padding 31->14/12, H1 34->32, eyebrow/intro
+     margins, intro line-height 1.65->1.55, CTA gap, buttons 52->50px)
+     pull the slot to ~650px so the original covers it at ~1.00x.
+     No text resized below 19px, no words cut. Buttons move UP, so the
+     Button-2 fold margins improve everywhere in this band. */
+  .hero-inner-page .hero-inner { padding: 14px 20px 12px; }
+  .hero-inner-page .eyebrow { margin-bottom: 8px; }
+  .hero-inner-page h1 { font-size: 32px; margin-bottom: 10px; }
+  .hero-inner-page p.hero-intro { line-height: 1.55; margin-bottom: 10px; }
+  .hero-inner-page .hero-cta { gap: 10px; }
+  .hero-inner-page .hero-cta .btn { min-height: 50px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

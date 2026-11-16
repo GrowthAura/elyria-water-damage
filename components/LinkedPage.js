@@ -1,5 +1,5 @@
 import { PHONE, PHONE_TEL, SITE_URL } from "../lib/data";
-import { srcsetFor, HERO_SIZES, BODY_SIZES } from "../lib/imageVariants";
+import { srcsetFor, heroSizesFor, heroDimsFor, bodyDimsFor, BODY_SIZES } from "../lib/imageVariants";
 import Segments from "./Segments";
 import SiteSchema from "./SiteSchema";
 
@@ -117,10 +117,26 @@ export default function LinkedPage({ page, urlPath }) {
 
   const webPageSchema = {
     "@context": "https://schema.org",
-    "@type": "WebPage",
+    // OPT-C3 SCHEMA-3a (2026-11-16): AboutPage / ContactPage subtypes —
+    // the pages ARE the about and contact pages (doc tabs "About Our
+    // Elyria Water Damage Restoration Crew" / "Contact Our Elyria Water
+    // Damage Crew", routes /about, /contact) — nothing invented.
+    // OPT-C3 SCHEMA-3b (2026-11-16): inLanguage "en" — doc is English,
+    // <html lang="en"> already declares it.
+    "@type":
+      page.kind === "about"
+        ? "AboutPage"
+        : page.kind === "contact"
+          ? "ContactPage"
+          : "WebPage",
     "@id": SITE_URL + urlPath,
     url: SITE_URL + urlPath,
     name: page.h1,
+    // OPT-C4 FIX-2 O-2 (2026-11-16): description = the page's own verbatim
+    // doc meta description (already in <meta name="description">) — nothing
+    // invented.
+    description: page.metaDescription,
+    inLanguage: "en",
     // OPT-C2 SCHEMA-2 (2026-11-13): primaryImageOfPage = the page's own
     // hero URL (honest, already on-page as og:image) — nothing invented.
     primaryImageOfPage: page.heroImage ? SITE_URL + page.heroImage : undefined,
@@ -172,9 +188,11 @@ export default function LinkedPage({ page, urlPath }) {
   // already exist in components/SiteSchema.js — nothing invented.
   // NO dates: the doc has none.
   // OPT-C1 SCHEMA-1 (2026-11-13): image = the blog's own hero image URL
-  // (honest, on-page) and author = the site's own brand Organization as
-  // rendered in the header ("Elyria Water Damage"), via the existing
-  // #localbusiness @id — no person name, nothing invented.
+  // (honest, on-page) and author = the site's own brand Organization,
+  // via the existing #localbusiness @id — no person name, nothing invented.
+  // OPT-C4 FIX-2 O-3 (2026-11-16): author name aligned to the canonical
+  // LocalBusiness name "Water Damage Restoration Elyria" (was the header
+  // variant "Elyria Water Damage"; same @id, #localbusiness).
   const blogPostingSchema =
     page.kind === "blog"
       ? {
@@ -183,11 +201,14 @@ export default function LinkedPage({ page, urlPath }) {
           "@id": SITE_URL + urlPath + "#blogposting",
           headline: page.h1,
           description: page.metaDescription,
+          // OPT-C3 SCHEMA-3b (2026-11-16): inLanguage "en" — doc is
+          // English, <html lang="en"> already declares it.
+          inLanguage: "en",
           image: page.heroImage ? SITE_URL + page.heroImage : undefined,
           author: {
             "@type": "Organization",
             "@id": SITE_URL + "/#localbusiness",
-            name: "Elyria Water Damage",
+            name: "Water Damage Restoration Elyria",
           },
           mainEntityOfPage: SITE_URL + urlPath,
           publisher: { "@id": SITE_URL + "/#localbusiness" },
@@ -238,7 +259,7 @@ export default function LinkedPage({ page, urlPath }) {
       <section className="hero hero-inner-page">
         {page.heroImage ? (
           <div className="hero-media">
-            <img src={page.heroImage} alt={page.heroAlt} width="1600" height="900" fetchPriority="high" srcSet={srcsetFor(page.heroImage)} sizes={HERO_SIZES} />
+            <img src={page.heroImage} alt={page.heroAlt} width={heroDimsFor(page.heroImage)?.width} height={heroDimsFor(page.heroImage)?.height} fetchPriority="high" srcSet={srcsetFor(page.heroImage)} sizes={heroSizesFor(page.heroImage)} />
           </div>
         ) : null}
         <div className="hero-inner">
@@ -314,6 +335,8 @@ export default function LinkedPage({ page, urlPath }) {
                     className="media-img"
                     src={mediaImage.src}
                     alt={mediaImage.alt}
+                    width={bodyDimsFor(mediaImage.src)?.width}
+                    height={bodyDimsFor(mediaImage.src)?.height}
                     loading="lazy"
                     srcSet={srcsetFor(mediaImage.src)}
                     sizes={BODY_SIZES}
@@ -330,6 +353,8 @@ export default function LinkedPage({ page, urlPath }) {
                     className="media-img"
                     src={im.src}
                     alt={im.alt}
+                    width={bodyDimsFor(im.src)?.width}
+                    height={bodyDimsFor(im.src)?.height}
                     loading="lazy"
                     srcSet={srcsetFor(im.src)}
                     sizes={BODY_SIZES}

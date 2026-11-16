@@ -21,7 +21,7 @@ import {
 } from "../lib/data";
 import Segments from "../components/Segments";
 import SiteSchema from "../components/SiteSchema";
-import { srcsetFor, HERO_SIZES } from "../lib/imageVariants";
+import { srcsetFor, heroSizesFor } from "../lib/imageVariants";
 
 export const metadata = {
   title: META.title,
@@ -91,6 +91,13 @@ const webPageSchema = {
   "@id": SITE_URL,
   url: SITE_URL,
   name: META.title,
+  // OPT-C4 FIX-2 O-2 (2026-11-16): description = the page's own verbatim
+  // doc meta description (already in <meta name="description">) — nothing
+  // invented.
+  description: META.description,
+  // OPT-C3 SCHEMA-3b (2026-11-16): inLanguage "en" — doc is English,
+  // <html lang="en"> already declares it.
+  inLanguage: "en",
   // OPT-C2 SCHEMA-2 (2026-11-13): primaryImageOfPage = the homepage's own
   // hero URL (honest, already on-page as og:image) — nothing invented.
   primaryImageOfPage: SITE_URL + "/images/hero-home.webp",
@@ -118,10 +125,26 @@ function joinLinks(links) {
   return out;
 }
 
+// OPT-C4 FIX-1 (2026-11-16, Auditor A P3-1): the "→" must never sit alone
+// on a line. The last word + arrow render inside a nowrap span, so the pair
+// drops to line 2 together when the label wraps. No visible word changes —
+// the label text is identical, only its line-breaking changes.
+function CardLinkLabel({ label }) {
+  const words = label.split(" ");
+  const tail = words.slice(-2).join(" ");
+  const head = words.slice(0, -2).join(" ");
+  return (
+    <>
+      {head}{" "}
+      <span className="card-link-tail">{tail}</span>
+    </>
+  );
+}
+
 export default function HomePage() {
   return (
     <>
-      <SiteSchema />
+      <SiteSchema hasOfferCatalog />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
@@ -145,11 +168,11 @@ export default function HomePage() {
           <img
             src="/images/hero-home.webp"
             alt="Aerial view of a flooded farm with grain silos and standing water"
-            width="1600"
-            height="900"
+            width="1400"
+            height="932"
             fetchPriority="high"
             srcSet={srcsetFor("/images/hero-home.webp")}
-            sizes={HERO_SIZES}
+            sizes={heroSizesFor("/images/hero-home.webp")}
           />
         </div>
         <div className="hero-inner">
@@ -218,7 +241,7 @@ export default function HomePage() {
                       is plain text now (was a 2nd link to the same target). */}
                   {s.slug ? (
                     <span className="card-link">
-                      {CARD_LINK_LABELS[s.slug] || `View ${s.h3} →`}
+                      <CardLinkLabel label={CARD_LINK_LABELS[s.slug] || `View ${s.h3} →`} />
                     </span>
                   ) : null}
                 </div>

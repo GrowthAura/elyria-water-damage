@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { SITE_URL } from "../../../lib/data";
 import { FULL_BLOG_PAGES, FULL_PAGE_BY_SLUG } from "../../../lib/pages-full";
 import LinkedPage from "../../../components/LinkedPage";
+import { heroDimsFor } from "../../../lib/imageVariants";
 
 export function generateStaticParams() {
   return FULL_BLOG_PAGES.map((p) => ({ slug: p.slug.replace(/^blog\//, "") }));
@@ -13,6 +14,7 @@ export async function generateMetadata({ params }) {
   if (!page) return {};
   const hero = page.heroImage || "/images/hero-home.webp";
   const heroAlt = page.heroAlt || "Water damage restoration in Elyria, Ohio";
+  const heroDims = heroDimsFor(hero) || { width: 1600, height: 900 };
   return {
     title: page.metaTitle,
     description: page.metaDescription,
@@ -23,7 +25,7 @@ export async function generateMetadata({ params }) {
       description: page.metaDescription,
       url: SITE_URL + "/blog/" + slug,
       type: "article",
-      images: [{ url: SITE_URL + hero, alt: heroAlt }],
+      images: [{ url: SITE_URL + hero, alt: heroAlt, width: heroDims.width, height: heroDims.height }],
     },
     twitter: {
       card: "summary_large_image",
