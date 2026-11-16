@@ -3,7 +3,9 @@ import { FULL_PAGE_BY_SLUG } from "../lib/pages-full";
 
 export const dynamic = "force-static";
 
-const LASTMOD = "2026-11-12"; // date-only, YYYY-MM-DD
+const LASTMOD = "2026-11-17"; // date-only, YYYY-MM-DD
+// 2026-11-17: header Services menu shipped on ALL 40 pages (new dropdown
+// markup in every page's HTML), so every route's lastmod is the push date.
 
 // Images per route (absolute URLs) for the image sitemap: the page's hero
 // plus its body images; the homepage also lists its 9 service-card images.
