@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { PHONE, PHONE_TEL } from "../lib/data";
+import { PHONE, PHONE_TEL } from "../lib/site"; // SPEED FIX 2026-11-17 F2: lib/site has no pages-full import, so the client chunk no longer ships the 647 KB doc dataset.
 
 // Mobile call bar: hidden while the hero is on screen (standing rule — it must
 // never cover the hero buttons at scroll 0), shown once the hero scrolls out.

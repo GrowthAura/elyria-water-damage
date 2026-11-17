@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { PHONE, PHONE_TEL, HEADER_SERVICES } from "../lib/data";
+import { PHONE, PHONE_TEL, HEADER_SERVICES } from "../lib/site"; // SPEED FIX 2026-11-17 F2: lib/site has no pages-full import, so the client chunk no longer ships the 647 KB doc dataset.
 
 export default function Header() {
   const [open, setOpen] = useState(false);

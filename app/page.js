@@ -21,7 +21,7 @@ import {
 } from "../lib/data";
 import Segments from "../components/Segments";
 import SiteSchema from "../components/SiteSchema";
-import { srcsetFor, heroSizesFor } from "../lib/imageVariants";
+import { srcsetFor, heroSizesFor, cardSrcsetFor, CARD_SIZES } from "../lib/imageVariants";
 
 export const metadata = {
   title: META.title,
@@ -227,7 +227,7 @@ export default function HomePage() {
             {SERVICES.map((s) => (
               <article className="card" key={s.h3}>
                 <div className="card-media">
-                  <img src={s.cardImage} alt={s.cardAlt} width="800" height="450" loading="lazy" />
+                  <img src={s.cardImage} alt={s.cardAlt} width="800" height="450" loading="lazy" srcSet={cardSrcsetFor(s.cardImage)} sizes={CARD_SIZES} />
                 </div>
                 <div className="card-body">
                   <h3>
