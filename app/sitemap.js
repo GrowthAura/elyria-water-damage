@@ -3,9 +3,12 @@ import { FULL_PAGE_BY_SLUG } from "../lib/pages-full";
 
 export const dynamic = "force-static";
 
-const LASTMOD = "2026-11-17"; // date-only, YYYY-MM-DD
-// 2026-11-17: header Services menu shipped on ALL 40 pages (new dropdown
-// markup in every page's HTML), so every route's lastmod is the push date.
+const LASTMOD_TODAY = "2026-11-17"; // date-only, YYYY-MM-DD
+const LASTMOD_YESTERDAY = "2026-11-16";
+// 2026-11-17 (his order 13:09 PKT "half sitemap pr kall ki date dallo"):
+// first 20 routes in sitemap order -> 2026-11-16, last 20 -> 2026-11-17.
+// (Sitemap order: homepage + 25 services + About + Contact + 12 blogs,
+// so the 2026-11-16 half is the homepage + first 19 services.)
 
 // Images per route (absolute URLs) for the image sitemap: the page's hero
 // plus its body images; the homepage also lists its 9 service-card images.
@@ -28,11 +31,11 @@ function imagesFor(route) {
 }
 
 export default function sitemap() {
-  return ALL_ROUTES.map((route) => ({
+  return ALL_ROUTES.map((route, idx) => ({
     // Next.js MetadataRoute.Sitemap field is `lastModified` (NOT `lastmod` —
     // an unknown `lastmod` key is silently dropped from the emitted XML).
     url: route === "/" ? SITE_URL : SITE_URL + route,
-    lastModified: LASTMOD,
+    lastModified: idx < 20 ? LASTMOD_YESTERDAY : LASTMOD_TODAY,
     changeFrequency: route === "/" ? "weekly" : "monthly",
     priority: route === "/" ? 1.0 : 0.8,
     images: imagesFor(route).map((src) => SITE_URL + src),
